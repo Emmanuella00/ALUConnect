@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import '../constants/colors.dart';
+import '../providers/rsvp_provider.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -137,6 +139,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildStats() {
+    final eventsAttending = context.watch<RsvpProvider>().rsvpedIds.length;
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -147,7 +150,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _statItem('23', 'Events'),
+          _statItem('$eventsAttending', 'Events'),
           Container(width: 1, height: 32, color: Colors.white12),
           _statItem('5', 'Communities'),
           Container(width: 1, height: 32, color: Colors.white12),

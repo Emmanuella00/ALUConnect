@@ -369,10 +369,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       const Icon(Icons.location_on_outlined,
                           size: 12, color: Colors.black45),
                       const SizedBox(width: 3),
-                      Text(
-                        '${event.location} • ${event.campus}',
-                        style: GoogleFonts.poppins(
-                            fontSize: 11, color: Colors.black45),
+                      Expanded(
+                        child: Text(
+                          '${event.location} • ${event.campus}',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.poppins(
+                              fontSize: 11, color: Colors.black45),
+                        ),
                       ),
                     ],
                   ),
