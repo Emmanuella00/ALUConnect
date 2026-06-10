@@ -280,22 +280,25 @@ class _ExploreScreenState extends State<ExploreScreen> {
               _stackAvatar('AM', AppColors.burgundy),
               _stackAvatar('JK', const Color(0xFF4A6A38)),
               _stackAvatar('TN', AppColors.navy),
-              Container(
-                width: 28,
-                height: 28,
-                margin: const EdgeInsets.only(left: -8),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF2A2018),
-                  shape: BoxShape.circle,
-                  border:
-                      Border.all(color: const Color(0xFF1A1510), width: 1.5),
-                ),
-                child: Center(
-                  child: Text('+45',
-                      style: GoogleFonts.poppins(
-                          fontSize: 8,
-                          color: Colors.white54,
-                          fontWeight: FontWeight.w600)),
+              Align(
+                alignment: Alignment.centerRight,
+                widthFactor: 5 / 7,
+                child: Container(
+                  width: 28,
+                  height: 28,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF2A2018),
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                        color: const Color(0xFF1A1510), width: 1.5),
+                  ),
+                  child: Center(
+                    child: Text('+45',
+                        style: GoogleFonts.poppins(
+                            fontSize: 8,
+                            color: Colors.white54,
+                            fontWeight: FontWeight.w600)),
+                  ),
                 ),
               ),
               const Spacer(),
@@ -447,10 +450,9 @@ class _ExploreScreenState extends State<ExploreScreen> {
   }
 
   Widget _stackAvatar(String initials, Color color) {
-    return Container(
+    final circle = Container(
       width: 28,
       height: 28,
-      margin: EdgeInsets.only(left: initials == 'AM' ? 0 : -8),
       decoration: BoxDecoration(
         color: color,
         shape: BoxShape.circle,
@@ -463,6 +465,12 @@ class _ExploreScreenState extends State<ExploreScreen> {
                 fontWeight: FontWeight.w700,
                 color: Colors.white)),
       ),
+    );
+    if (initials == 'AM') return circle;
+    return Align(
+      alignment: Alignment.centerRight,
+      widthFactor: 5 / 7,
+      child: circle,
     );
   }
 }

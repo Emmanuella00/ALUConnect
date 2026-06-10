@@ -307,20 +307,23 @@ class EventDetailScreen extends StatelessWidget {
   }
 
   Widget _attendeeCircle(String initials, Color color) {
-    return Container(
-      width: 32,
-      height: 32,
-      margin: const EdgeInsets.only(right: -8),
-      decoration: BoxDecoration(
-        color: color,
-        shape: BoxShape.circle,
-        border: Border.all(color: AppColors.backgroundBeige, width: 2),
-      ),
-      child: Center(
-        child: Text(
-          initials,
-          style: GoogleFonts.poppins(
-              fontSize: 10, fontWeight: FontWeight.w700, color: Colors.white),
+    return Align(
+      alignment: Alignment.centerLeft,
+      widthFactor: 0.75,
+      child: Container(
+        width: 32,
+        height: 32,
+        decoration: BoxDecoration(
+          color: color,
+          shape: BoxShape.circle,
+          border: Border.all(color: AppColors.backgroundBeige, width: 2),
+        ),
+        child: Center(
+          child: Text(
+            initials,
+            style: GoogleFonts.poppins(
+                fontSize: 10, fontWeight: FontWeight.w700, color: Colors.white),
+          ),
         ),
       ),
     );
