@@ -28,6 +28,38 @@ class Event {
     this.isFeatured = false,
     this.imageUrl = '',
   });
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'title': title,
+        'organizer': organizer,
+        'date': date,
+        'time': time,
+        'location': location,
+        'campus': campus,
+        'description': description,
+        'tags': tags,
+        'category': category,
+        'goingCount': goingCount,
+        'isFeatured': isFeatured,
+        'imageUrl': imageUrl,
+      };
+
+  factory Event.fromJson(Map<String, dynamic> json) => Event(
+        id: json['id'] as String,
+        title: json['title'] as String,
+        organizer: json['organizer'] as String,
+        date: json['date'] as String,
+        time: json['time'] as String,
+        location: json['location'] as String,
+        campus: json['campus'] as String,
+        description: json['description'] as String,
+        tags: List<String>.from(json['tags'] as List),
+        category: json['category'] as String,
+        goingCount: json['goingCount'] as int? ?? 0,
+        isFeatured: json['isFeatured'] as bool? ?? false,
+        imageUrl: json['imageUrl'] as String? ?? '',
+      );
 }
 
 class MockEvents {

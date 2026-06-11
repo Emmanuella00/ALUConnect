@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../constants/colors.dart';
+import '../providers/club_provider.dart';
 import '../providers/rsvp_provider.dart';
 import '../providers/user_provider.dart';
 
@@ -138,6 +139,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _buildStats() {
     final eventsAttending = context.watch<RsvpProvider>().rsvpedIds.length;
+    final communities = context.watch<ClubProvider>().joinedCount;
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -150,7 +152,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         children: [
           _statItem('$eventsAttending', 'Events'),
           Container(width: 1, height: 32, color: Colors.white12),
-          _statItem('5', 'Communities'),
+          _statItem('$communities', 'Communities'),
           Container(width: 1, height: 32, color: Colors.white12),
           _statItem('87', 'Connections'),
         ],
@@ -222,9 +224,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _buildMenuItems() {
     final items = [
+      {'icon': Icons.add_circle_outline, 'label': 'Post opportunity', 'route': '/create-opportunity'},
       {'icon': Icons.calendar_today_outlined, 'label': 'My RSVPs', 'route': '/my-rsvps'},
       {'icon': Icons.bookmark_border, 'label': 'Saved events', 'route': null},
-      // <-- ADD STUDY GROUPS BUTTON HERE
       {'icon': Icons.group_outlined, 'label': 'Study Groups', 'route': '/study-groups'},
       {'icon': Icons.star_border, 'label': 'My reviews', 'route': null},
       {'icon': Icons.manage_accounts_outlined, 'label': 'Account settings', 'route': null},

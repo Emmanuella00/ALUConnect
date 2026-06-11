@@ -6,6 +6,8 @@ import 'constants/colors.dart';
 import 'providers/rsvp_provider.dart';
 import 'providers/study_group_provider.dart';
 import 'providers/user_provider.dart';
+import 'providers/club_provider.dart';
+import 'providers/opportunity_provider.dart';
 import 'screens/splash_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/login_screen.dart';
@@ -15,6 +17,8 @@ import 'screens/event_detail_screen.dart';
 import 'screens/rsvp_confirmed_screen.dart';
 import 'screens/my_rsvps_screen.dart';
 import 'screens/study_groups_screen.dart';
+import 'screens/community_hub_screen.dart';
+import 'screens/create_opportunity_screen.dart';
 import 'models/event.dart';
 
 void main() {
@@ -31,6 +35,8 @@ void main() {
         ChangeNotifierProvider(create: (_) => RsvpProvider()),
         ChangeNotifierProvider(create: (_) => StudyGroupProvider()..loadDummyGroups()),
         ChangeNotifierProvider(create: (_) => UserProvider()..load()),
+        ChangeNotifierProvider(create: (_) => ClubProvider()..load()),
+        ChangeNotifierProvider(create: (_) => OpportunityProvider()..load()),
       ],
       child: const ALUStrideApp(),
     ),
@@ -78,6 +84,11 @@ class ALUStrideApp extends StatelessWidget {
             return _slideRoute(EventDetailScreen(event: event));
           case '/study-groups':
             return _fadeRoute(const StudyGroupsScreen());
+          case '/community-hub':
+            final clubId = settings.arguments as String;
+            return _slideRoute(CommunityHubScreen(clubId: clubId));
+          case '/create-opportunity':
+            return _slideUpRoute(const CreateOpportunityScreen());
           default:
             return _fadeRoute(const SplashScreen());
         }

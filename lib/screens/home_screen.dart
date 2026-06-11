@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import '../constants/colors.dart';
 import '../models/event.dart';
+import '../providers/opportunity_provider.dart';
 import '../providers/rsvp_provider.dart';
 import '../providers/user_provider.dart';
 import '../widgets/network_image_box.dart';
@@ -29,14 +30,13 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    // Simulate loading
     Future.delayed(const Duration(seconds: 2), () {
       if (mounted) setState(() => _isLoading = false);
     });
   }
 
-  List<Event> get _filteredEvents {
-    List<Event> events = MockEvents.all.where((e) => !e.isFeatured).toList();
+  List<Event> _filteredEvents(OpportunityProvider opportunityProvider) {
+    List<Event> events = opportunityProvider.getAllEvents();
     if (_selectedFilter != 'All') {
       events = events.where((e) => e.category == _selectedFilter).toList();
     }
@@ -56,6 +56,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final opportunityProvider = context.watch<OpportunityProvider>();
+    final filteredEvents = _filteredEvents(opportunityProvider);
+
     return Scaffold(
       backgroundColor: AppColors.backgroundDark,
       body: SafeArea(
@@ -77,13 +80,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   childCount: 3,
                 ),
               )
-            else if (_filteredEvents.isEmpty)
+            else if (filteredEvents.isEmpty)
               SliverToBoxAdapter(child: _buildEmptyState())
             else
               SliverList(
                 delegate: SliverChildBuilderDelegate(
-                  (_, i) => _buildEventCard(_filteredEvents[i]),
-                  childCount: _filteredEvents.length,
+                  (_, i) => _buildEventCard(filteredEvents[i]),
+                  childCount: filteredEvents.length,
                 ),
               ),
             const SliverToBoxAdapter(child: SizedBox(height: 20)),
