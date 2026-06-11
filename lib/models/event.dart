@@ -78,6 +78,7 @@ class MockEvents {
       category: 'Events',
       goingCount: 89,
       isFeatured: true,
+      imageUrl: 'https://picsum.photos/seed/alu-pitch-night/800/450',
     ),
     Event(
       id: '2',
@@ -92,6 +93,7 @@ class MockEvents {
       tags: ['Leadership', 'Workshop'],
       category: 'Workshops',
       goingCount: 54,
+      imageUrl: 'https://picsum.photos/seed/leadership-workshop/800/450',
     ),
     Event(
       id: '3',
@@ -106,6 +108,7 @@ class MockEvents {
       tags: ['Technology', 'Internships'],
       category: 'Events',
       goingCount: 210,
+      imageUrl: 'https://picsum.photos/seed/tech-summit/800/450',
     ),
     Event(
       id: '4',
@@ -120,6 +123,7 @@ class MockEvents {
       tags: ['Innovation', 'Hackathon'],
       category: 'Hackathons',
       goingCount: 67,
+      imageUrl: 'https://picsum.photos/seed/social-hackathon/800/450',
     ),
     Event(
       id: '5',
@@ -134,6 +138,7 @@ class MockEvents {
       tags: ['Leadership', 'Technology', 'Innovation'],
       category: 'Workshops',
       goingCount: 48,
+      imageUrl: 'https://picsum.photos/seed/ai-social-impact/800/450',
     ),
     Event(
       id: '6',
@@ -148,6 +153,7 @@ class MockEvents {
       tags: ['Technology', 'Workshop'],
       category: 'Workshops',
       goingCount: 33,
+      imageUrl: 'https://picsum.photos/seed/data-analytics-seminar/800/450',
     ),
     Event(
       id: '7',
@@ -162,6 +168,7 @@ class MockEvents {
       tags: ['Technology', 'Innovation'],
       category: 'Hackathons',
       goingCount: 78,
+      imageUrl: 'https://picsum.photos/seed/fintech-challenge/800/450',
     ),
     Event(
       id: '8',
@@ -176,6 +183,7 @@ class MockEvents {
       tags: ['Entrepreneurship', 'Networking'],
       category: 'Events',
       goingCount: 120,
+      imageUrl: 'https://picsum.photos/seed/founders-mixer/800/450',
     ),
     Event(
       id: '9',
@@ -190,6 +198,7 @@ class MockEvents {
       tags: ['Technology', 'Internships'],
       category: 'Internships',
       goingCount: 142,
+      imageUrl: 'https://picsum.photos/seed/andela-internship/800/450',
     ),
     Event(
       id: '10',
@@ -204,6 +213,7 @@ class MockEvents {
       tags: ['Business', 'Internships'],
       category: 'Internships',
       goingCount: 96,
+      imageUrl: 'https://picsum.photos/seed/mtn-trainee/800/450',
     ),
     Event(
       id: '11',
@@ -218,6 +228,7 @@ class MockEvents {
       tags: ['Leadership', 'Internships'],
       category: 'Internships',
       goingCount: 61,
+      imageUrl: 'https://picsum.photos/seed/un-women-internship/800/450',
     ),
     Event(
       id: '12',
@@ -232,6 +243,7 @@ class MockEvents {
       tags: ['Community', 'Networking'],
       category: 'Events',
       goingCount: 187,
+      imageUrl: 'https://picsum.photos/seed/cultural-heritage-night/800/450',
     ),
     Event(
       id: '13',
@@ -246,6 +258,7 @@ class MockEvents {
       tags: ['Leadership', 'Workshop'],
       category: 'Workshops',
       goingCount: 44,
+      imageUrl: 'https://picsum.photos/seed/public-speaking/800/450',
     ),
     Event(
       id: '14',
@@ -260,6 +273,7 @@ class MockEvents {
       tags: ['Innovation', 'Hackathon'],
       category: 'Hackathons',
       goingCount: 73,
+      imageUrl: 'https://picsum.photos/seed/climate-hackathon/800/450',
     ),
   ];
 }

@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../constants/colors.dart';
 import '../providers/club_provider.dart';
 import '../providers/rsvp_provider.dart';
+import '../providers/user_provider.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -14,41 +15,11 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  String _firstName = 'Amara';
-  String _lastName = 'Mensah';
-  String _email = 'amara.mensah@alueducation.com';
-  String _campus = 'Kigali Campus';
-
   final List<Map<String, dynamic>> _interests = [
     {'label': 'Student Leadership', 'color': Color(0xFF4A5A28), 'bg': Color(0xFFA8A848)},
     {'label': 'Pan-Africanism', 'color': Color(0xFF6A0A40), 'bg': Color(0xFFF4C0D0)},
     {'label': 'Entrepreneurship', 'color': Color(0xFF3A3A3A), 'bg': Color(0xFFD8D8D0)},
   ];
-
-  @override
-  void initState() {
-    super.initState();
-    _loadProfile();
-  }
-
-  Future<void> _loadProfile() async {
-    final prefs = await SharedPreferences.getInstance();
-    if (!mounted) return;
-    setState(() {
-      _firstName = prefs.getString('user_first_name') ?? _firstName;
-      _lastName = prefs.getString('user_last_name') ?? _lastName;
-      _email = prefs.getString('user_email') ?? _email;
-      _campus = prefs.getString('user_campus') ?? _campus;
-    });
-  }
-
-  String get _initials {
-    final f = _firstName.isNotEmpty ? _firstName[0] : '';
-    final l = _lastName.isNotEmpty ? _lastName[0] : '';
-    return '$f$l'.toUpperCase();
-  }
-
-  String get _fullName => '$_firstName $_lastName'.trim();
 
   @override
   Widget build(BuildContext context) {
@@ -94,6 +65,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildProfileHeader() {
+    final user = context.watch<UserProvider>();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
@@ -109,7 +81,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   shape: BoxShape.circle,
                 ),
                 child: Center(
-                  child: Text(_initials,
+                  child: Text(user.initials,
                       style: GoogleFonts.poppins(
                           fontSize: 32,
                           fontWeight: FontWeight.w800,
@@ -133,7 +105,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ],
           ),
           const SizedBox(height: 12),
-          Text(_fullName,
+          Text(user.fullName,
               style: GoogleFonts.poppins(
                   fontSize: 22,
                   fontWeight: FontWeight.w800,
@@ -144,7 +116,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               const Icon(Icons.location_on_outlined, size: 14, color: Colors.white38),
               const SizedBox(width: 4),
-              Text(_campus,
+              Text(user.campus,
                   style: const TextStyle(fontSize: 13, color: Colors.white38)),
             ],
           ),
@@ -156,7 +128,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               borderRadius: BorderRadius.circular(99),
               border: Border.all(color: AppColors.navyLight),
             ),
-            child: Text(_email,
+            child: Text(user.email,
                 style: GoogleFonts.poppins(fontSize: 11, color: Colors.white54)),
           ),
           const SizedBox(height: 16),
@@ -318,7 +290,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
         borderRadius: BorderRadius.circular(14),
       ),
       child: ListTile(
-        onTap: _signOut,
+        onTap: () async {
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.remove('is_logged_in');
+          await prefs.remove('user_email');
+          await prefs.remove('user_first_name');
+          await prefs.remove('user_last_name');
+          await prefs.remove('user_campus');
+
+          if (!mounted) return;
+          context.read<RsvpProvider>().reset();
+          context.read<UserProvider>().clear();
+          Navigator.pushNamedAndRemoveUntil(
+              context, '/splash', (route) => false);
+        },
         title: Center(
           child: Text('Sign Out',
               style: GoogleFonts.poppins(
@@ -326,12 +311,5 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       ),
     );
-  }
-
-  Future<void> _signOut() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('is_logged_in', false);
-    if (!mounted) return;
-    Navigator.pushReplacementNamed(context, '/splash');
   }
 }

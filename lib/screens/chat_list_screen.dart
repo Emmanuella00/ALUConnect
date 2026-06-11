@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../constants/colors.dart';
+import '../widgets/user_avatar.dart';
 
 // ─── Chat List ────────────────────────────────────────────────────────────────
 class ChatListScreen extends StatefulWidget {
@@ -95,16 +96,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
               child: Row(
                 children: [
-                  Container(
-                    width: 36,
-                    height: 36,
-                    decoration: const BoxDecoration(
-                      color: AppColors.burgundy,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(Icons.person,
-                        color: Colors.white, size: 18),
-                  ),
+                  const UserAvatar(size: 36),
                   const SizedBox(width: 10),
                   Text('ALUConnect',
                       style: GoogleFonts.poppins(

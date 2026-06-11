@@ -38,4 +38,11 @@ class RsvpProvider extends ChangeNotifier {
     _rsvpedIds.remove(eventId);
     notifyListeners();
   }
+
+  void reset() {
+    _rsvpedIds.clear();
+    _interestedIds.clear();
+    _savedIds.clear();
+    notifyListeners();
+  }
 }
