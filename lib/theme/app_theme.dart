@@ -18,7 +18,6 @@ class AppTheme {
       colorScheme: const ColorScheme.dark(
         primary: primary,
         surface: surface,
-        background: background,
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,

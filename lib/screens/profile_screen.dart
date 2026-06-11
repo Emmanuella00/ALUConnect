@@ -50,12 +50,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   fontWeight: FontWeight.w700,
                   color: Colors.white)),
           Row(
-            children: [
-              const Icon(Icons.notifications_outlined,
-                  color: Colors.white60, size: 24),
-              const SizedBox(width: 16),
-              const Icon(Icons.settings_outlined,
-                  color: Colors.white60, size: 24),
+            children: const [
+              Icon(Icons.notifications_outlined, color: Colors.white60, size: 24),
+              SizedBox(width: 16),
+              Icon(Icons.settings_outlined, color: Colors.white60, size: 24),
             ],
           ),
         ],
@@ -111,13 +109,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
           const SizedBox(height: 4),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.location_on_outlined,
-                  size: 14, color: Colors.white38),
-              const SizedBox(width: 4),
+            children: const [
+              Icon(Icons.location_on_outlined, size: 14, color: Colors.white38),
+              SizedBox(width: 4),
               Text('Kigali Campus',
-                  style: GoogleFonts.poppins(
-                      fontSize: 13, color: Colors.white38)),
+                  style: TextStyle(fontSize: 13, color: Colors.white38)),
             ],
           ),
           const SizedBox(height: 8),
@@ -129,8 +125,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               border: Border.all(color: AppColors.navyLight),
             ),
             child: Text('amara.mensah@alueducation.com',
-                style: GoogleFonts.poppins(
-                    fontSize: 11, color: Colors.white54)),
+                style: GoogleFonts.poppins(fontSize: 11, color: Colors.white54)),
           ),
           const SizedBox(height: 16),
         ],
@@ -170,8 +165,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               color: AppColors.burgundy,
             )),
         Text(label,
-            style: GoogleFonts.poppins(
-                fontSize: 12, color: Colors.white38)),
+            style: GoogleFonts.poppins(fontSize: 12, color: Colors.white38)),
       ],
     );
   }
@@ -184,44 +178,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
         children: [
           Text('Interests',
               style: GoogleFonts.poppins(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white)),
+                  fontSize: 18, fontWeight: FontWeight.w700, color: Colors.white)),
           const SizedBox(height: 10),
           Wrap(
             spacing: 8,
             runSpacing: 8,
             children: [
               ..._interests.map((i) => Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 14, vertical: 7),
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
                     decoration: BoxDecoration(
                       color: (i['bg'] as Color).withOpacity(0.3),
                       borderRadius: BorderRadius.circular(99),
-                      border: Border.all(
-                          color: (i['bg'] as Color).withOpacity(0.5)),
+                      border: Border.all(color: (i['bg'] as Color).withOpacity(0.5)),
                     ),
                     child: Text(
                       i['label'] as String,
                       style: GoogleFonts.poppins(
-                          fontSize: 13,
-                          color: i['bg'] as Color,
-                          fontWeight: FontWeight.w500),
+                          fontSize: 13, color: i['bg'] as Color, fontWeight: FontWeight.w500),
                     ),
                   )),
               GestureDetector(
                 onTap: () {},
                 child: Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 14, vertical: 7),
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
                   decoration: BoxDecoration(
                     color: Colors.white10,
                     borderRadius: BorderRadius.circular(99),
                     border: Border.all(color: Colors.white24),
                   ),
                   child: Text('+ Add New',
-                      style: GoogleFonts.poppins(
-                          fontSize: 13, color: Colors.white38)),
+                      style: GoogleFonts.poppins(fontSize: 13, color: Colors.white38)),
                 ),
               ),
             ],
@@ -235,6 +221,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final items = [
       {'icon': Icons.calendar_today_outlined, 'label': 'My RSVPs', 'route': '/my-rsvps'},
       {'icon': Icons.bookmark_border, 'label': 'Saved events', 'route': null},
+      // <-- ADD STUDY GROUPS BUTTON HERE
+      {'icon': Icons.group_outlined, 'label': 'Study Groups', 'route': '/study-groups'},
       {'icon': Icons.star_border, 'label': 'My reviews', 'route': null},
       {'icon': Icons.manage_accounts_outlined, 'label': 'Account settings', 'route': null},
     ];
@@ -259,8 +247,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               decoration: BoxDecoration(
                 border: i < items.length - 1
-                    ? const Border(
-                        bottom: BorderSide(color: Color(0xFF2A2018), width: 0.5))
+                    ? const Border(bottom: BorderSide(color: Color(0xFF2A2018), width: 0.5))
                     : null,
               ),
               child: Row(
@@ -278,11 +265,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(item['label'] as String,
-                        style: GoogleFonts.poppins(
-                            fontSize: 15, color: Colors.white)),
+                        style: GoogleFonts.poppins(fontSize: 15, color: Colors.white)),
                   ),
-                  const Icon(Icons.chevron_right,
-                      color: Colors.white24, size: 22),
+                  const Icon(Icons.chevron_right, color: Colors.white24, size: 22),
                 ],
               ),
             ),
@@ -300,14 +285,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
         borderRadius: BorderRadius.circular(14),
       ),
       child: ListTile(
-        onTap: () =>
-            Navigator.pushReplacementNamed(context, '/splash'),
+        onTap: () => Navigator.pushReplacementNamed(context, '/splash'),
         title: Center(
           child: Text('Sign Out',
               style: GoogleFonts.poppins(
-                  fontSize: 15,
-                  color: AppColors.burgundy,
-                  fontWeight: FontWeight.w600)),
+                  fontSize: 15, color: AppColors.burgundy, fontWeight: FontWeight.w600)),
         ),
       ),
     );

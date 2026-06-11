@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'constants/colors.dart';
 import 'providers/rsvp_provider.dart';
+import 'providers/study_group_provider.dart';
 import 'screens/splash_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/login_screen.dart';
@@ -12,6 +13,7 @@ import 'screens/main_screen.dart';
 import 'screens/event_detail_screen.dart';
 import 'screens/rsvp_confirmed_screen.dart';
 import 'screens/my_rsvps_screen.dart';
+import 'screens/study_groups_screen.dart';
 import 'models/event.dart';
 
 void main() {
@@ -26,6 +28,7 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => RsvpProvider()),
+        ChangeNotifierProvider(create: (_) => StudyGroupProvider()..loadDummyGroups()),
       ],
       child: const ALUStrideApp(),
     ),
@@ -71,6 +74,8 @@ class ALUStrideApp extends StatelessWidget {
           case '/event-detail':
             final event = settings.arguments as Event;
             return _slideRoute(EventDetailScreen(event: event));
+          case '/study-groups':
+            return _fadeRoute(const StudyGroupsScreen());
           default:
             return _fadeRoute(const SplashScreen());
         }
