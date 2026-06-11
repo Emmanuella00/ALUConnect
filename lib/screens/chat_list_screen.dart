@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 import '../constants/colors.dart';
 
 // ─── Chat List ────────────────────────────────────────────────────────────────
@@ -187,7 +189,8 @@ class _ChatListScreenState extends State<ChatListScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
         backgroundColor: AppColors.burgundy,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         child: const Icon(Icons.chat_bubble_outline_rounded,
             color: Colors.white),
       ),
@@ -211,7 +214,6 @@ class _ChatListScreenState extends State<ChatListScreen> {
         ),
         child: Row(
           children: [
-            // Avatar
             Stack(
               children: [
                 Container(
@@ -381,6 +383,34 @@ class _ConversationScreenState extends State<ConversationScreen> {
     },
   ];
 
+  @override
+  void initState() {
+    super.initState();
+    _loadMessages();
+  }
+
+  // Load saved messages from SharedPreferences
+  Future<void> _loadMessages() async {
+    final prefs = await SharedPreferences.getInstance();
+    final key = 'chat_${widget.chat['id']}';
+    final saved = prefs.getString(key);
+    if (saved != null) {
+      final loaded =
+          List<Map<String, dynamic>>.from(jsonDecode(saved));
+      setState(() {
+        _messages.clear();
+        _messages.addAll(loaded);
+      });
+    }
+  }
+
+  // Save messages to SharedPreferences
+  Future<void> _saveMessages() async {
+    final prefs = await SharedPreferences.getInstance();
+    final key = 'chat_${widget.chat['id']}';
+    await prefs.setString(key, jsonEncode(_messages));
+  }
+
   void _sendMessage() {
     final text = _messageController.text.trim();
     if (text.isEmpty) return;
@@ -393,6 +423,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
       });
     });
     _messageController.clear();
+    _saveMessages(); // Save messages after sending
     Future.delayed(const Duration(milliseconds: 100), () {
       _scrollController.animateTo(
         _scrollController.position.maxScrollExtent,
@@ -455,7 +486,6 @@ class _ConversationScreenState extends State<ConversationScreen> {
       ),
       body: Column(
         children: [
-          // Date separator
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12),
             child: Container(
@@ -473,7 +503,6 @@ class _ConversationScreenState extends State<ConversationScreen> {
                       letterSpacing: 0.8)),
             ),
           ),
-          // Messages
           Expanded(
             child: _messages.isEmpty
                 ? Center(
@@ -489,7 +518,6 @@ class _ConversationScreenState extends State<ConversationScreen> {
                     itemBuilder: (_, i) => _buildMessage(_messages[i]),
                   ),
           ),
-          // Input bar
           Container(
             padding:
                 const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
@@ -500,11 +528,13 @@ class _ConversationScreenState extends State<ConversationScreen> {
             ),
             child: Row(
               children: [
-                const Icon(Icons.attach_file, color: Colors.white54, size: 22),
+                const Icon(Icons.attach_file,
+                    color: Colors.white54, size: 22),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16),
                     decoration: BoxDecoration(
                       color: const Color(0xFF2A2018),
                       borderRadius: BorderRadius.circular(99),
@@ -569,8 +599,8 @@ class _ConversationScreenState extends State<ConversationScreen> {
             ),
           Container(
             margin: const EdgeInsets.only(bottom: 12),
-            padding:
-                const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            padding: const EdgeInsets.symmetric(
+                horizontal: 14, vertical: 10),
             constraints: BoxConstraints(
               maxWidth: MediaQuery.of(context).size.width * 0.75,
             ),

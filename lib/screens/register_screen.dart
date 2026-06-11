@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../constants/colors.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -46,10 +47,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return 'Strong';
   }
 
-  void _createAccount() async {
+ void _createAccount() async {
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
       await Future.delayed(const Duration(seconds: 2));
+
+      // Save user data with SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('is_logged_in', true);
+      await prefs.setString('user_first_name', _firstNameController.text);
+      await prefs.setString('user_last_name', _lastNameController.text);
+      await prefs.setString('user_email', _emailController.text);
+      await prefs.setString('user_campus', _selectedCampus!);
+
       if (mounted) {
         setState(() => _isLoading = false);
         Navigator.pushReplacementNamed(context, '/main');
