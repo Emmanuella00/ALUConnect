@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import '../constants/colors.dart';
 import '../models/club.dart';
 import '../providers/club_provider.dart';
+import '../widgets/empty_state_widget.dart';
+import '../widgets/fade_in_slide.dart';
 import '../widgets/network_image_box.dart';
 import '../widgets/user_avatar.dart';
 
@@ -16,13 +18,17 @@ class ExploreScreen extends StatefulWidget {
 
 class _ExploreScreenState extends State<ExploreScreen> {
   int _tabIndex = 0;
+  String _searchQuery = '';
 
   List<Club> get _displayedClubs {
     final clubProvider = context.watch<ClubProvider>();
-    if (_tabIndex == 1) {
-      return clubProvider.joinedClubs;
-    }
-    return MockClubs.all;
+    final clubs =
+        _tabIndex == 1 ? clubProvider.joinedClubs : MockClubs.all;
+    if (_searchQuery.isEmpty) return clubs;
+    return clubs
+        .where((c) =>
+            c.name.toLowerCase().contains(_searchQuery.toLowerCase()))
+        .toList();
   }
 
   @override
@@ -41,11 +47,23 @@ class _ExploreScreenState extends State<ExploreScreen> {
             SliverToBoxAdapter(child: _buildStartupWeekend()),
             SliverToBoxAdapter(child: _buildRecommendedHeader()),
             if (_displayedClubs.isEmpty)
-              SliverToBoxAdapter(child: _buildEmptyClubs())
+              SliverToBoxAdapter(
+                child: _searchQuery.isNotEmpty
+                    ? EmptyStateWidget(
+                        icon: Icons.search_off,
+                        title: 'No communities found',
+                        subtitle:
+                            'Nothing matches "$_searchQuery". Try a different name.',
+                      )
+                    : _buildEmptyClubs(),
+              )
             else
               SliverList(
                 delegate: SliverChildBuilderDelegate(
-                  (_, i) => _buildClubItem(_displayedClubs[i], clubProvider),
+                  (_, i) => FadeInSlide(
+                    delay: Duration(milliseconds: 50 * (i < 6 ? i : 6)),
+                    child: _buildClubItem(_displayedClubs[i], clubProvider),
+                  ),
                   childCount: _displayedClubs.length,
                 ),
               ),
@@ -94,6 +112,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
           borderRadius: BorderRadius.circular(12),
         ),
         child: TextField(
+          onChanged: (v) => setState(() => _searchQuery = v),
           style: GoogleFonts.poppins(fontSize: 14, color: Colors.white),
           decoration: InputDecoration(
             hintText: 'Search communities, skills, or members',

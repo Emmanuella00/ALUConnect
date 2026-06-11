@@ -32,7 +32,7 @@ void main() {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => RsvpProvider()),
+        ChangeNotifierProvider(create: (_) => RsvpProvider()..load()),
         ChangeNotifierProvider(create: (_) => StudyGroupProvider()..loadDummyGroups()),
         ChangeNotifierProvider(create: (_) => UserProvider()..load()),
         ChangeNotifierProvider(create: (_) => ClubProvider()..load()),

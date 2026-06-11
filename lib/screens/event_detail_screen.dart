@@ -88,7 +88,10 @@ class EventDetailScreen extends StatelessWidget {
             ),
           ),
           SliverToBoxAdapter(
-            child: NetworkImageBox(imageUrl: event.imageUrl, height: 200),
+            child: Hero(
+              tag: 'event-image-${event.id}',
+              child: NetworkImageBox(imageUrl: event.imageUrl, height: 200),
+            ),
           ),
           // Details body
           SliverToBoxAdapter(
@@ -174,10 +177,13 @@ class EventDetailScreen extends StatelessWidget {
           border: Border(
               top: BorderSide(color: AppColors.border, width: 0.5)),
         ),
-        child: isGoing
-            ? _goingConfirmation(context)
-            : Row(
-                children: [
+        child: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 300),
+          child: isGoing
+              ? _goingConfirmation(context)
+              : Row(
+                  key: const ValueKey('rsvp-actions'),
+                  children: [
                   // Interested button
                   Expanded(
                     flex: 1,
@@ -204,14 +210,18 @@ class EventDetailScreen extends StatelessWidget {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(99)),
                       ),
-                      child: Text(
-                        isInterested ? '✓ Interested' : 'Interested',
-                        style: GoogleFonts.poppins(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: isInterested
-                              ? AppColors.burgundy
-                              : AppColors.textDark,
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 200),
+                        child: Text(
+                          isInterested ? '✓ Interested' : 'Interested',
+                          key: ValueKey(isInterested),
+                          style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: isInterested
+                                ? AppColors.burgundy
+                                : AppColors.textDark,
+                          ),
                         ),
                       ),
                     ),
@@ -245,6 +255,7 @@ class EventDetailScreen extends StatelessWidget {
                   ),
                 ],
               ),
+        ),
       ),
     );
   }
