@@ -204,7 +204,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         _label('Campus'),
                         const SizedBox(height: 6),
                         DropdownButtonFormField<String>(
-                          value: _selectedCampus,
+                          initialValue: _selectedCampus,
                           dropdownColor: const Color(0xFF2A2018),
                           style: GoogleFonts.poppins(
                               fontSize: 14, color: Colors.white),
