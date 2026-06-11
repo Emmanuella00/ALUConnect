@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../constants/colors.dart';
 import '../models/event.dart';
 import '../providers/rsvp_provider.dart';
+import '../widgets/network_image_box.dart';
 
 class EventDetailScreen extends StatelessWidget {
   final Event event;
@@ -86,17 +87,8 @@ class EventDetailScreen extends StatelessWidget {
               ),
             ),
           ),
-          // Event image placeholder
           SliverToBoxAdapter(
-            child: Container(
-              width: double.infinity,
-              height: 200,
-              color: const Color(0xFF1A1510),
-              child: const Center(
-                child: Icon(Icons.image_outlined,
-                    size: 60, color: Colors.white12),
-              ),
-            ),
+            child: NetworkImageBox(imageUrl: event.imageUrl, height: 200),
           ),
           // Details body
           SliverToBoxAdapter(

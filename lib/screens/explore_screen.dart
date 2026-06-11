@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../constants/colors.dart';
+import '../widgets/network_image_box.dart';
+import '../widgets/user_avatar.dart';
 
 class ExploreScreen extends StatefulWidget {
   const ExploreScreen({super.key});
@@ -68,15 +70,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
       child: Row(
         children: [
-          Container(
-            width: 36,
-            height: 36,
-            decoration: const BoxDecoration(
-              color: AppColors.burgundy,
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(Icons.person, color: Colors.white, size: 18),
-          ),
+          const UserAvatar(size: 36),
           const SizedBox(width: 10),
           Text(
             'ALUConnect',
@@ -167,14 +161,10 @@ class _ExploreScreenState extends State<ExploreScreen> {
       ),
       child: Stack(
         children: [
-          ClipRRect(
+          NetworkImageBox(
+            imageUrl: 'https://picsum.photos/seed/ai-innovation-lab/800/450',
+            height: 160,
             borderRadius: BorderRadius.circular(16),
-            child: Container(
-              color: const Color(0xFF2A2018),
-              child: const Center(
-                child: Icon(Icons.science, size: 60, color: Colors.white12),
-              ),
-            ),
           ),
           Positioned.fill(
             child: Container(

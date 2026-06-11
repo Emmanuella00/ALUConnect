@@ -5,6 +5,9 @@ import 'package:shimmer/shimmer.dart';
 import '../constants/colors.dart';
 import '../models/event.dart';
 import '../providers/rsvp_provider.dart';
+import '../providers/user_provider.dart';
+import '../widgets/network_image_box.dart';
+import '../widgets/user_avatar.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -91,28 +94,19 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildTopBar() {
+    final firstName = context.watch<UserProvider>().firstName;
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
       child: Row(
         children: [
-          // Avatar
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: AppColors.burgundy,
-              shape: BoxShape.circle,
-              border: Border.all(color: Colors.white24, width: 1.5),
-            ),
-            child: const Icon(Icons.person, color: Colors.white, size: 20),
-          ),
+          const UserAvatar(size: 40),
           const SizedBox(width: 10),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Hi, Amara 👋',
+                  'Hi, $firstName 👋',
                   style: GoogleFonts.poppins(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
@@ -216,67 +210,98 @@ class _HomeScreenState extends State<HomeScreen> {
           Navigator.pushNamed(context, '/event-detail', arguments: event),
       child: Container(
         margin: const EdgeInsets.fromLTRB(16, 14, 16, 0),
-        padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: AppColors.navy,
           borderRadius: BorderRadius.circular(16),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Stack(
           children: [
-            Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.15),
-                borderRadius: BorderRadius.circular(6),
-              ),
-              child: Text(
-                'FEATURED EVENT',
-                style: GoogleFonts.poppins(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
-                  letterSpacing: 0.8,
+            NetworkImageBox(
+              imageUrl: event.imageUrl,
+              height: 220,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            Positioned.fill(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Colors.transparent, Colors.black.withOpacity(0.85)],
+                    stops: const [0.35, 1.0],
+                  ),
                 ),
               ),
             ),
-            const SizedBox(height: 10),
-            Text(
-              event.title,
-              style: GoogleFonts.poppins(
-                fontSize: 22,
-                fontWeight: FontWeight.w800,
-                color: Colors.white,
-                height: 1.2,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              event.description,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.poppins(
-                  fontSize: 13, color: Colors.white60, height: 1.5),
-            ),
-            const SizedBox(height: 14),
-            ElevatedButton(
-              onPressed: () => Navigator.pushNamed(context, '/event-detail',
-                  arguments: event),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.burgundy,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(99)),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                elevation: 0,
-              ),
-              child: Text(
-                'View details',
-                style: GoogleFonts.poppins(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white),
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.15),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
+                        'FEATURED EVENT',
+                        style: GoogleFonts.poppins(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                          letterSpacing: 0.8,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      event.title,
+                      style: GoogleFonts.poppins(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                        height: 1.2,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      event.description,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.poppins(
+                          fontSize: 13, color: Colors.white60, height: 1.5),
+                    ),
+                    const SizedBox(height: 14),
+                    ElevatedButton(
+                      onPressed: () => Navigator.pushNamed(
+                          context, '/event-detail',
+                          arguments: event),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.burgundy,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(99)),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 10),
+                        elevation: 0,
+                      ),
+                      child: Text(
+                        'View details',
+                        style: GoogleFonts.poppins(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
@@ -329,6 +354,17 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Thumbnail
+            SizedBox(
+              width: 64,
+              height: 64,
+              child: NetworkImageBox(
+                imageUrl: event.imageUrl,
+                height: 64,
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            const SizedBox(width: 10),
             // Date badge
             _dateBadge(event.date),
             const SizedBox(width: 12),
@@ -509,7 +545,7 @@ class _HomeScreenState extends State<HomeScreen> {
       highlightColor: const Color(0xFF3A3028),
       child: Container(
         margin: const EdgeInsets.fromLTRB(16, 14, 16, 0),
-        height: 160,
+        height: 220,
         decoration: BoxDecoration(
           color: const Color(0xFF2A2018),
           borderRadius: BorderRadius.circular(16),

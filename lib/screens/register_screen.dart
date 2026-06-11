@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import '../constants/colors.dart';
+import '../providers/user_provider.dart';
+import '../widgets/network_image_box.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -61,6 +64,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
       await prefs.setString('user_campus', _selectedCampus!);
 
       if (mounted) {
+        await context.read<UserProvider>().load();
+      }
+
+      if (mounted) {
         setState(() => _isLoading = false);
         Navigator.pushReplacementNamed(context, '/main');
       }
@@ -107,16 +114,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
           child: Column(
             children: [
               // Hero image
-              Container(
-                width: double.infinity,
+              const NetworkImageBox(
+                imageUrl: 'https://picsum.photos/seed/alu-campus/800/450',
                 height: 160,
-                decoration: const BoxDecoration(
-                  color: Color(0xFF1A1510),
-                ),
-                child: const Center(
-                  child: Icon(Icons.location_city,
-                      size: 60, color: Colors.white12),
-                ),
               ),
               // Form card
               Padding(

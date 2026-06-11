@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'constants/colors.dart';
 import 'providers/rsvp_provider.dart';
 import 'providers/study_group_provider.dart';
+import 'providers/user_provider.dart';
 import 'screens/splash_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/login_screen.dart';
@@ -29,6 +30,7 @@ void main() {
       providers: [
         ChangeNotifierProvider(create: (_) => RsvpProvider()),
         ChangeNotifierProvider(create: (_) => StudyGroupProvider()..loadDummyGroups()),
+        ChangeNotifierProvider(create: (_) => UserProvider()..load()),
       ],
       child: const ALUStrideApp(),
     ),

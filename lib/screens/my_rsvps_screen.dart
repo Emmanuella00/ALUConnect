@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import '../constants/colors.dart';
 import '../models/event.dart';
 import '../providers/rsvp_provider.dart';
+import '../widgets/network_image_box.dart';
+import '../widgets/user_avatar.dart';
 
 class MyRsvpsScreen extends StatefulWidget {
   const MyRsvpsScreen({super.key});
@@ -30,6 +32,7 @@ class _MyRsvpsScreenState extends State<MyRsvpsScreen> {
       tags: [],
       category: 'Workshop',
       goingCount: 33,
+      imageUrl: 'https://picsum.photos/seed/data-analytics-seminar/800/450',
     ),
     Event(
       id: 'past2',
@@ -43,6 +46,7 @@ class _MyRsvpsScreenState extends State<MyRsvpsScreen> {
       tags: [],
       category: 'Hackathon',
       goingCount: 78,
+      imageUrl: 'https://picsum.photos/seed/fintech-challenge/800/450',
     ),
     Event(
       id: 'past3',
@@ -56,6 +60,7 @@ class _MyRsvpsScreenState extends State<MyRsvpsScreen> {
       tags: [],
       category: 'Social',
       goingCount: 120,
+      imageUrl: 'https://picsum.photos/seed/founders-mixer/800/450',
     ),
   ];
 
@@ -98,15 +103,9 @@ class _MyRsvpsScreenState extends State<MyRsvpsScreen> {
         actions: [
           const Icon(Icons.search, color: Colors.white60),
           const SizedBox(width: 8),
-          Container(
-            width: 30,
-            height: 30,
-            margin: const EdgeInsets.only(right: 12),
-            decoration: const BoxDecoration(
-              color: AppColors.burgundy,
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(Icons.person, color: Colors.white, size: 16),
+          const Padding(
+            padding: EdgeInsets.only(right: 12),
+            child: UserAvatar(size: 30),
           ),
         ],
       ),
@@ -181,21 +180,14 @@ class _MyRsvpsScreenState extends State<MyRsvpsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Image placeholder
+          // Image
           Stack(
             children: [
-              Container(
-                width: double.infinity,
+              NetworkImageBox(
+                imageUrl: event.imageUrl,
                 height: 140,
-                decoration: const BoxDecoration(
-                  color: Color(0xFF2A2018),
-                  borderRadius:
-                      BorderRadius.vertical(top: Radius.circular(14)),
-                ),
-                child: const Center(
-                  child: Icon(Icons.image_outlined,
-                      size: 40, color: Colors.white12),
-                ),
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(14)),
               ),
               // Tags overlay
               Positioned(

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../constants/colors.dart';
 import '../providers/rsvp_provider.dart';
+import '../providers/user_provider.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -62,6 +64,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildProfileHeader() {
+    final user = context.watch<UserProvider>();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
@@ -77,7 +80,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   shape: BoxShape.circle,
                 ),
                 child: Center(
-                  child: Text('AM',
+                  child: Text(user.initials,
                       style: GoogleFonts.poppins(
                           fontSize: 32,
                           fontWeight: FontWeight.w800,
@@ -101,7 +104,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ],
           ),
           const SizedBox(height: 12),
-          Text('Amara Mensah',
+          Text(user.fullName,
               style: GoogleFonts.poppins(
                   fontSize: 22,
                   fontWeight: FontWeight.w800,
@@ -109,11 +112,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
           const SizedBox(height: 4),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              Icon(Icons.location_on_outlined, size: 14, color: Colors.white38),
-              SizedBox(width: 4),
-              Text('Kigali Campus',
-                  style: TextStyle(fontSize: 13, color: Colors.white38)),
+            children: [
+              const Icon(Icons.location_on_outlined, size: 14, color: Colors.white38),
+              const SizedBox(width: 4),
+              Text(user.campus,
+                  style: const TextStyle(fontSize: 13, color: Colors.white38)),
             ],
           ),
           const SizedBox(height: 8),
@@ -124,7 +127,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               borderRadius: BorderRadius.circular(99),
               border: Border.all(color: AppColors.navyLight),
             ),
-            child: Text('amara.mensah@alueducation.com',
+            child: Text(user.email,
                 style: GoogleFonts.poppins(fontSize: 11, color: Colors.white54)),
           ),
           const SizedBox(height: 16),
@@ -285,7 +288,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
         borderRadius: BorderRadius.circular(14),
       ),
       child: ListTile(
-        onTap: () => Navigator.pushReplacementNamed(context, '/splash'),
+        onTap: () async {
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.remove('is_logged_in');
+          await prefs.remove('user_email');
+          await prefs.remove('user_first_name');
+          await prefs.remove('user_last_name');
+          await prefs.remove('user_campus');
+
+          if (!mounted) return;
+          context.read<RsvpProvider>().reset();
+          context.read<UserProvider>().clear();
+          Navigator.pushNamedAndRemoveUntil(
+              context, '/splash', (route) => false);
+        },
         title: Center(
           child: Text('Sign Out',
               style: GoogleFonts.poppins(
