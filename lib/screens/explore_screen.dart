@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import '../constants/colors.dart';
+import '../models/club.dart';
+import '../providers/club_provider.dart';
 
 class ExploreScreen extends StatefulWidget {
   const ExploreScreen({super.key});
@@ -11,26 +14,19 @@ class ExploreScreen extends StatefulWidget {
 
 class _ExploreScreenState extends State<ExploreScreen> {
   int _tabIndex = 0;
-  final Set<String> _joinedClubs = {'2'};
 
-  final List<Map<String, dynamic>> _clubs = [
-    {'id': '1', 'name': 'Data Science Guild', 'members': '892', 'icon': Icons.code, 'color': Color(0xFF8A1A30)},
-    {'id': '2', 'name': 'Sustainability Hub', 'members': '1.2k', 'icon': Icons.eco, 'color': Color(0xFF2A4A1A)},
-    {'id': '3', 'name': 'Creative Arts Collective', 'members': '456', 'icon': Icons.palette, 'color': Color(0xFF1A2A6A)},
-    {'id': '4', 'name': 'Global Politics Forum', 'members': '328', 'icon': Icons.account_balance, 'color': Color(0xFF3A3A3A)},
-    {'id': '5', 'name': 'AI Innovation Lab', 'members': '240', 'icon': Icons.psychology, 'color': Color(0xFF4A1A5A)},
-    {'id': '6', 'name': 'Entrepreneurship Club', 'members': '342', 'icon': Icons.rocket_launch, 'color': Color(0xFF5A3A1A)},
-  ];
-
-  List<Map<String, dynamic>> get _displayedClubs {
+  List<Club> get _displayedClubs {
+    final clubProvider = context.watch<ClubProvider>();
     if (_tabIndex == 1) {
-      return _clubs.where((c) => _joinedClubs.contains(c['id'])).toList();
+      return clubProvider.joinedClubs;
     }
-    return _clubs;
+    return MockClubs.all;
   }
 
   @override
   Widget build(BuildContext context) {
+    final clubProvider = context.watch<ClubProvider>();
+
     return Scaffold(
       backgroundColor: AppColors.backgroundDark,
       body: SafeArea(
@@ -47,7 +43,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
             else
               SliverList(
                 delegate: SliverChildBuilderDelegate(
-                  (_, i) => _buildClubItem(_displayedClubs[i]),
+                  (_, i) => _buildClubItem(_displayedClubs[i], clubProvider),
                   childCount: _displayedClubs.length,
                 ),
               ),
@@ -56,8 +52,9 @@ class _ExploreScreenState extends State<ExploreScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () => Navigator.pushNamed(context, '/create-opportunity'),
         backgroundColor: AppColors.burgundy,
+        tooltip: 'Post opportunity',
         child: const Icon(Icons.add, color: Colors.white),
       ),
     );
@@ -158,97 +155,101 @@ class _ExploreScreenState extends State<ExploreScreen> {
   }
 
   Widget _buildTrendingCard() {
-    return Container(
-      margin: const EdgeInsets.fromLTRB(16, 14, 16, 0),
-      height: 160,
-      decoration: BoxDecoration(
-        color: const Color(0xFF1A1510),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Stack(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(16),
-            child: Container(
-              color: const Color(0xFF2A2018),
-              child: const Center(
-                child: Icon(Icons.science, size: 60, color: Colors.white12),
-              ),
-            ),
-          ),
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                gradient: const LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [Colors.transparent, Colors.black87],
+    return GestureDetector(
+      onTap: () => Navigator.pushNamed(context, '/community-hub', arguments: '5'),
+      child: Container(
+        margin: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+        height: 160,
+        decoration: BoxDecoration(
+          color: const Color(0xFF1A1510),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Stack(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: Container(
+                color: const Color(0xFF2A2018),
+                child: const Center(
+                  child: Icon(Icons.science, size: 60, color: Colors.white12),
                 ),
               ),
             ),
-          ),
-          Positioned(
-            top: 12,
-            left: 12,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: AppColors.burgundy,
-                borderRadius: BorderRadius.circular(6),
+            Positioned.fill(
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  gradient: const LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Colors.transparent, Colors.black87],
+                  ),
+                ),
               ),
-              child: Text('TRENDING',
-                  style: GoogleFonts.poppins(
-                      fontSize: 9,
-                      fontWeight: FontWeight.w700,
+            ),
+            Positioned(
+              top: 12,
+              left: 12,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: AppColors.burgundy,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Text('TRENDING',
+                    style: GoogleFonts.poppins(
+                        fontSize: 9,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                        letterSpacing: 0.8)),
+              ),
+            ),
+            Positioned(
+              bottom: 12,
+              left: 12,
+              right: 12,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'The AI Innovation Lab',
+                    style: GoogleFonts.poppins(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w800,
                       color: Colors.white,
-                      letterSpacing: 0.8)),
-            ),
-          ),
-          Positioned(
-            bottom: 12,
-            left: 12,
-            right: 12,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'The AI Innovation Lab',
-                  style: GoogleFonts.poppins(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w800,
-                    color: Colors.white,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Building the next generation of pan-African tech solutions. Join 240+ members today.',
-                  style: GoogleFonts.poppins(
-                      fontSize: 11, color: Colors.white70),
-                ),
-                const SizedBox(height: 8),
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.burgundy,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(99)),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 6),
-                    elevation: 0,
-                    minimumSize: Size.zero,
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  const SizedBox(height: 4),
+                  Text(
+                    'Building the next generation of pan-African tech solutions. Join 240+ members today.',
+                    style: GoogleFonts.poppins(
+                        fontSize: 11, color: Colors.white70),
                   ),
-                  child: Text('Explore Lab',
-                      style: GoogleFonts.poppins(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white)),
-                ),
-              ],
+                  const SizedBox(height: 8),
+                  ElevatedButton(
+                    onPressed: () =>
+                        Navigator.pushNamed(context, '/community-hub', arguments: '5'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.burgundy,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(99)),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 6),
+                      elevation: 0,
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    child: Text('Explore Lab',
+                        style: GoogleFonts.poppins(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white)),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -303,7 +304,8 @@ class _ExploreScreenState extends State<ExploreScreen> {
               ),
               const Spacer(),
               TextButton(
-                onPressed: () {},
+                onPressed: () =>
+                    Navigator.pushNamed(context, '/community-hub', arguments: '6'),
                 child: Text('Learn More',
                     style: GoogleFonts.poppins(
                         fontSize: 13, color: Colors.white54)),
@@ -342,87 +344,90 @@ class _ExploreScreenState extends State<ExploreScreen> {
     );
   }
 
-  Widget _buildClubItem(Map<String, dynamic> club) {
-    final isJoined = _joinedClubs.contains(club['id']);
-    return Container(
-      margin: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-      decoration: BoxDecoration(
-        color: const Color(0xFF1A1510),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              color: club['color'] as Color,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(club['icon'] as IconData,
-                color: Colors.white, size: 22),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(club['name'] as String,
-                    style: GoogleFonts.poppins(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white)),
-                Row(children: [
-                  const Icon(Icons.people_outline,
-                      size: 12, color: Colors.white38),
-                  const SizedBox(width: 4),
-                  Text('${club['members']} members',
-                      style: GoogleFonts.poppins(
-                          fontSize: 11, color: Colors.white38)),
-                ]),
-              ],
-            ),
-          ),
-          GestureDetector(
-            onTap: () {
-              setState(() {
-                if (isJoined) {
-                  _joinedClubs.remove(club['id']);
-                } else {
-                  _joinedClubs.add(club['id'] as String);
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text('You joined ${club['name']}!',
-                        style: GoogleFonts.poppins(color: Colors.white)),
-                    backgroundColor: AppColors.navy,
-                    behavior: SnackBarBehavior.floating,
-                  ));
-                }
-              });
-            },
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+  Widget _buildClubItem(Club club, ClubProvider clubProvider) {
+    final isJoined = clubProvider.isJoined(club.id);
+    return GestureDetector(
+      onTap: () =>
+          Navigator.pushNamed(context, '/community-hub', arguments: club.id),
+      child: Container(
+        margin: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        decoration: BoxDecoration(
+          color: const Color(0xFF1A1510),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 44,
+              height: 44,
               decoration: BoxDecoration(
-                color: isJoined
-                    ? Colors.transparent
-                    : AppColors.burgundy,
-                border: isJoined
-                    ? Border.all(color: Colors.white24)
-                    : null,
-                borderRadius: BorderRadius.circular(99),
+                color: club.color,
+                borderRadius: BorderRadius.circular(12),
               ),
-              child: Text(
-                isJoined ? '✓ Joined' : 'Join',
-                style: GoogleFonts.poppins(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: isJoined ? Colors.white54 : Colors.white,
+              child: Icon(club.icon, color: Colors.white, size: 22),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(club.name,
+                      style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white)),
+                  Row(children: [
+                    const Icon(Icons.people_outline,
+                        size: 12, color: Colors.white38),
+                    const SizedBox(width: 4),
+                    Text('${club.memberCount} members',
+                        style: GoogleFonts.poppins(
+                            fontSize: 11, color: Colors.white38)),
+                  ]),
+                ],
+              ),
+            ),
+            GestureDetector(
+              onTap: () async {
+                if (isJoined) {
+                  await clubProvider.toggleJoin(club.id);
+                } else {
+                  await clubProvider.toggleJoin(club.id);
+                  if (!mounted) return;
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('You joined ${club.name}!',
+                          style: GoogleFonts.poppins(color: Colors.white)),
+                      backgroundColor: AppColors.navy,
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                }
+              },
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                decoration: BoxDecoration(
+                  color: isJoined ? Colors.transparent : AppColors.burgundy,
+                  border: isJoined
+                      ? Border.all(color: Colors.white24)
+                      : null,
+                  borderRadius: BorderRadius.circular(99),
+                ),
+                child: Text(
+                  isJoined ? '✓ Joined' : 'Join',
+                  style: GoogleFonts.poppins(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: isJoined ? Colors.white54 : Colors.white,
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

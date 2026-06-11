@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../constants/colors.dart';
+import '../providers/club_provider.dart';
 import '../providers/rsvp_provider.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -12,11 +14,41 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  String _firstName = 'Amara';
+  String _lastName = 'Mensah';
+  String _email = 'amara.mensah@alueducation.com';
+  String _campus = 'Kigali Campus';
+
   final List<Map<String, dynamic>> _interests = [
     {'label': 'Student Leadership', 'color': Color(0xFF4A5A28), 'bg': Color(0xFFA8A848)},
     {'label': 'Pan-Africanism', 'color': Color(0xFF6A0A40), 'bg': Color(0xFFF4C0D0)},
     {'label': 'Entrepreneurship', 'color': Color(0xFF3A3A3A), 'bg': Color(0xFFD8D8D0)},
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfile();
+  }
+
+  Future<void> _loadProfile() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (!mounted) return;
+    setState(() {
+      _firstName = prefs.getString('user_first_name') ?? _firstName;
+      _lastName = prefs.getString('user_last_name') ?? _lastName;
+      _email = prefs.getString('user_email') ?? _email;
+      _campus = prefs.getString('user_campus') ?? _campus;
+    });
+  }
+
+  String get _initials {
+    final f = _firstName.isNotEmpty ? _firstName[0] : '';
+    final l = _lastName.isNotEmpty ? _lastName[0] : '';
+    return '$f$l'.toUpperCase();
+  }
+
+  String get _fullName => '$_firstName $_lastName'.trim();
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +109,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   shape: BoxShape.circle,
                 ),
                 child: Center(
-                  child: Text('AM',
+                  child: Text(_initials,
                       style: GoogleFonts.poppins(
                           fontSize: 32,
                           fontWeight: FontWeight.w800,
@@ -101,7 +133,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ],
           ),
           const SizedBox(height: 12),
-          Text('Amara Mensah',
+          Text(_fullName,
               style: GoogleFonts.poppins(
                   fontSize: 22,
                   fontWeight: FontWeight.w800,
@@ -109,11 +141,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
           const SizedBox(height: 4),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              Icon(Icons.location_on_outlined, size: 14, color: Colors.white38),
-              SizedBox(width: 4),
-              Text('Kigali Campus',
-                  style: TextStyle(fontSize: 13, color: Colors.white38)),
+            children: [
+              const Icon(Icons.location_on_outlined, size: 14, color: Colors.white38),
+              const SizedBox(width: 4),
+              Text(_campus,
+                  style: const TextStyle(fontSize: 13, color: Colors.white38)),
             ],
           ),
           const SizedBox(height: 8),
@@ -124,7 +156,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               borderRadius: BorderRadius.circular(99),
               border: Border.all(color: AppColors.navyLight),
             ),
-            child: Text('amara.mensah@alueducation.com',
+            child: Text(_email,
                 style: GoogleFonts.poppins(fontSize: 11, color: Colors.white54)),
           ),
           const SizedBox(height: 16),
@@ -135,6 +167,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _buildStats() {
     final eventsAttending = context.watch<RsvpProvider>().rsvpedIds.length;
+    final communities = context.watch<ClubProvider>().joinedCount;
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -147,7 +180,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         children: [
           _statItem('$eventsAttending', 'Events'),
           Container(width: 1, height: 32, color: Colors.white12),
-          _statItem('5', 'Communities'),
+          _statItem('$communities', 'Communities'),
           Container(width: 1, height: 32, color: Colors.white12),
           _statItem('87', 'Connections'),
         ],
@@ -219,9 +252,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _buildMenuItems() {
     final items = [
+      {'icon': Icons.add_circle_outline, 'label': 'Post opportunity', 'route': '/create-opportunity'},
       {'icon': Icons.calendar_today_outlined, 'label': 'My RSVPs', 'route': '/my-rsvps'},
       {'icon': Icons.bookmark_border, 'label': 'Saved events', 'route': null},
-      // <-- ADD STUDY GROUPS BUTTON HERE
       {'icon': Icons.group_outlined, 'label': 'Study Groups', 'route': '/study-groups'},
       {'icon': Icons.star_border, 'label': 'My reviews', 'route': null},
       {'icon': Icons.manage_accounts_outlined, 'label': 'Account settings', 'route': null},
@@ -285,7 +318,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         borderRadius: BorderRadius.circular(14),
       ),
       child: ListTile(
-        onTap: () => Navigator.pushReplacementNamed(context, '/splash'),
+        onTap: _signOut,
         title: Center(
           child: Text('Sign Out',
               style: GoogleFonts.poppins(
@@ -293,5 +326,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _signOut() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('is_logged_in', false);
+    if (!mounted) return;
+    Navigator.pushReplacementNamed(context, '/splash');
   }
 }
