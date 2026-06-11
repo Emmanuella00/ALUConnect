@@ -5,7 +5,7 @@ A mobile-first Flutter application built for the African Leadership University c
 
 ---
 
-## What is ALU Stride?
+## What is ALU Connect?
 
 ALUConnect solves a real problem ALU students face every day: opportunities, events, and communities are scattered across WhatsApp groups, emails, and notice boards. By the time a student hears about a hackathon or leadership workshop, registration is already closed.
 
@@ -23,7 +23,7 @@ ALUConnect brings everything into one place — a platform where any student can
 - **Lightweight Chat** — Peer-to-peer and group messaging for community coordination
 - **Profile** — Personal identity with interests, bio, campus, stats (events attended, communities, connections), and RSVP history
 
-### Unique to ALU Stride
+### Unique to ALU Connect
 - **My RSVPs** — A dedicated screen tracking all Going, Interested, and Past events with ticket view
 - **Event Reviews** — Students can leave feedback on past events to help organizers improve
 - **Peer Connection** — View other students' profiles, interests, and bios to find collaborators
@@ -132,18 +132,18 @@ All main screens are accessible via a persistent bottom navigation bar (Home · 
 
 | Name | Role | Branch |
 |------|------|--------|
-| Emmanuella Ikirezi | UI/UX Lead | `feat/ui-ux-emmanuella` |
-| Leny | Core Features Dev | `feat/events-profile-leny` |
-| Audric | Extra Features + Technical Initiative | `feat/auth-audric` |
-| Alain Mugenga | Report + Demo Lead | `feat/report-demo-alain` |
-
+| Emmanuella Ikirezi | UI/UX Lead |
+| Leny Pascal Ihirwe| Core Features Dev |
+| Audric Mihigo| Extra Features + Technical Initiative | 
+| Alain Mugenga | Report + Demo Lead |
+| Rashid Ali Ntangungira | Navigation + Bonus features Lead | 
 ---
 
 ## AI Usage Disclosure
 
 In compliance with the ALU Academic Integrity Policy:
 
-- **Claude (Anthropic)** was used as a productivity tool for brainstorming screen layouts, generating boilerplate Flutter code as a starting point, and debugging errors.
+- **Claude (Anthropic)** was used as a productivity tool for brainstorming layouts and debugging errors.
 - All code was reviewed, understood, and adapted by the team before being committed.
 - Every team member can explain and justify any part of the codebase — this was verified through internal code review sessions before the demo.
 - The UI/UX design decisions, color palette, feature choices, and ALU-specific product thinking were done independently by the team.
