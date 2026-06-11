@@ -7,6 +7,7 @@ import '../models/event.dart';
 import '../providers/opportunity_provider.dart';
 import '../providers/rsvp_provider.dart';
 import '../providers/user_provider.dart';
+import '../widgets/fade_in_slide.dart';
 import '../widgets/network_image_box.dart';
 import '../widgets/user_avatar.dart';
 
@@ -22,6 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController _searchController = TextEditingController();
   bool _isLoading = true;
   String _searchQuery = '';
+  bool _myCampusOnly = false;
 
   final List<String> _filters = [
     'All', 'Events', 'Workshops', 'Internships', 'Hackathons'
@@ -39,6 +41,10 @@ class _HomeScreenState extends State<HomeScreen> {
     List<Event> events = opportunityProvider.getAllEvents();
     if (_selectedFilter != 'All') {
       events = events.where((e) => e.category == _selectedFilter).toList();
+    }
+    if (_myCampusOnly) {
+      final campus = context.read<UserProvider>().campus;
+      events = events.where((e) => e.campus == campus).toList();
     }
     if (_searchQuery.isNotEmpty) {
       events = events
@@ -85,7 +91,10 @@ class _HomeScreenState extends State<HomeScreen> {
             else
               SliverList(
                 delegate: SliverChildBuilderDelegate(
-                  (_, i) => _buildEventCard(filteredEvents[i]),
+                  (_, i) => FadeInSlide(
+                    delay: Duration(milliseconds: 60 * (i < 6 ? i : 6)),
+                    child: _buildEventCard(filteredEvents[i]),
+                  ),
                   childCount: filteredEvents.length,
                 ),
               ),
@@ -123,18 +132,19 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               const Icon(Icons.notifications_outlined,
                   color: Colors.white60, size: 26),
-              Positioned(
-                right: 0,
-                top: 0,
-                child: Container(
-                  width: 8,
-                  height: 8,
-                  decoration: const BoxDecoration(
-                    color: AppColors.burgundy,
-                    shape: BoxShape.circle,
+              if (context.watch<RsvpProvider>().rsvpedIds.isNotEmpty)
+                Positioned(
+                  right: 0,
+                  top: 0,
+                  child: Container(
+                    width: 8,
+                    height: 8,
+                    decoration: const BoxDecoration(
+                      color: AppColors.burgundy,
+                      shape: BoxShape.circle,
+                    ),
                   ),
                 ),
-              ),
             ],
           ),
         ],
@@ -174,8 +184,9 @@ class _HomeScreenState extends State<HomeScreen> {
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        itemCount: _filters.length,
+        itemCount: _filters.length + 1,
         itemBuilder: (_, i) {
+          if (i == _filters.length) return _buildCampusPill();
           final filter = _filters[i];
           final isActive = _selectedFilter == filter;
           return GestureDetector(
@@ -202,6 +213,40 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildCampusPill() {
+    return GestureDetector(
+      onTap: () => setState(() => _myCampusOnly = !_myCampusOnly),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        margin: const EdgeInsets.only(right: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        decoration: BoxDecoration(
+          color: _myCampusOnly ? AppColors.navy : const Color(0xFF2A2018),
+          borderRadius: BorderRadius.circular(99),
+          border: Border.all(
+            color: _myCampusOnly ? AppColors.navyLight : Colors.transparent,
+          ),
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.location_on_outlined,
+                size: 14,
+                color: _myCampusOnly ? Colors.white : Colors.white60),
+            const SizedBox(width: 4),
+            Text(
+              'My campus',
+              style: GoogleFonts.poppins(
+                fontSize: 13,
+                fontWeight: _myCampusOnly ? FontWeight.w600 : FontWeight.w400,
+                color: _myCampusOnly ? Colors.white : Colors.white60,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -361,10 +406,13 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(
               width: 64,
               height: 64,
-              child: NetworkImageBox(
-                imageUrl: event.imageUrl,
-                height: 64,
-                borderRadius: BorderRadius.circular(12),
+              child: Hero(
+                tag: 'event-image-${event.id}',
+                child: NetworkImageBox(
+                  imageUrl: event.imageUrl,
+                  height: 64,
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
             ),
             const SizedBox(width: 10),

@@ -193,6 +193,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             if (v == null || v.isEmpty) {
                               return 'Email is required';
                             }
+                            if (!RegExp(r'^[\w.+-]+@[\w-]+(\.[\w-]+)+$')
+                                .hasMatch(v)) {
+                              return 'Enter a valid email address';
+                            }
                             if (!v.endsWith('@alustudent.com') &&
                                 !v.endsWith('@alueducation.com')) {
                               return 'Must be an ALU student email';
